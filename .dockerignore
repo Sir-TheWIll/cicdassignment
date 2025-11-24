@@ -1,0 +1,41 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Next.js
+.next
+out
+build
+
+# Testing
+coverage
+.nyc_output
+
+# Environment variables
+.env
+.env*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Documentation (keep README for Docker images)
+*.md
+!README.md
+!ASSESSMENT.md
+
+# Misc
+*.log
+.cache
+
