@@ -56,15 +56,25 @@ jobs:
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      # Step 5: Login to Docker Hub (optional - only if secrets are configured)
+      # Step 5: Check if Docker Hub credentials are configured
+      - name: Check Docker Hub credentials
+        id: dockerhub
+        run: |
+          if [ -n "${{ secrets.DOCKER_USERNAME }}" ] && [ -n "${{ secrets.DOCKER_PASSWORD }}" ]; then
+            echo "configured=true" >> $GITHUB_OUTPUT
+          else
+            echo "configured=false" >> $GITHUB_OUTPUT
+          fi
+
+      # Step 6: Login to Docker Hub (optional - only if secrets are configured)
       - name: Login to Docker Hub
-        if: ${{ secrets.DOCKER_USERNAME }}
+        if: steps.dockerhub.outputs.configured == 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 6: Login to GitHub Container Registry (ghcr.io)
+      # Step 7: Login to GitHub Container Registry (ghcr.io)
       # Uses built-in GITHUB_TOKEN - no additional setup needed
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -73,7 +83,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 7: Prepare Docker image tags
+      # Step 8: Prepare Docker image tags
       # Creates tags for both versioned and latest images
       - name: Prepare tags
         id: tags
@@ -83,7 +93,7 @@ jobs:
           TAGS="$TAGS ghcr.io/${{ github.repository }}:latest"
 
           # Optionally tag for Docker Hub if credentials are provided
-          if [ -n "${{ secrets.DOCKER_USERNAME }}" ]; then
+          if [ "${{ steps.dockerhub.outputs.configured }}" == "true" ]; then
             TAGS="$TAGS ${{ secrets.DOCKER_USERNAME }}/task-manager:${{ steps.tag.outputs.tag }}"
             TAGS="$TAGS ${{ secrets.DOCKER_USERNAME }}/task-manager:latest"
           fi
@@ -96,7 +106,7 @@ jobs:
           echo "Prepared tags:"
           echo "$TAGS" | tr ' ' '\n'
 
-      # Step 8: Build and push Docker image
+      # Step 9: Build and push Docker image
       # Uses BuildKit caching for faster builds
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -117,14 +127,14 @@ jobs:
             org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
             org.opencontainers.image.source=${{ github.repositoryUrl }}
 
-      # Step 9: Verify image was pushed successfully
+      # Step 10: Verify image was pushed successfully
       - name: Verify image push
         run: |
           echo "Verifying image: ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}"
           docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }} || exit 1
           echo "✅ Image verified successfully!"
 
-      # Step 10: Create GitHub Release with release notes
+      # Step 11: Create GitHub Release with release notes
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
