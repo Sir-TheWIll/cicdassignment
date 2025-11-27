@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history for changelog generation
+          fetch-depth: 0 # Fetch full history for changelog generation
 
       # Step 2: Set up Docker Buildx for advanced build features
       - name: Set up Docker Buildx
@@ -47,11 +47,11 @@ jobs:
             echo "Previous tag: $PREVIOUS_TAG"
             CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges ${PREVIOUS_TAG}..HEAD)
           fi
-          
+
           if [ -z "$CHANGELOG" ]; then
             CHANGELOG="- No changes detected"
           fi
-          
+
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -81,18 +81,18 @@ jobs:
           # Always tag for GitHub Container Registry
           TAGS="ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}"
           TAGS="$TAGS ghcr.io/${{ github.repository }}:latest"
-          
+
           # Optionally tag for Docker Hub if credentials are provided
           if [ -n "${{ secrets.DOCKER_USERNAME }}" ]; then
             TAGS="$TAGS ${{ secrets.DOCKER_USERNAME }}/task-manager:${{ steps.tag.outputs.tag }}"
             TAGS="$TAGS ${{ secrets.DOCKER_USERNAME }}/task-manager:latest"
           fi
-          
+
           # Output tags in multiline format for docker/build-push-action
           echo "tags<<EOF" >> $GITHUB_OUTPUT
           echo "$TAGS" | tr ' ' '\n' >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-          
+
           echo "Prepared tags:"
           echo "$TAGS" | tr ' ' '\n'
 
@@ -169,6 +169,6 @@ jobs:
             - **Build Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')
           draft: false
           prerelease: false
-          generate_release_notes: true  # Auto-generate release notes from PRs
+          generate_release_notes: true # Auto-generate release notes from PRs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
