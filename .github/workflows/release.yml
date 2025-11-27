@@ -59,8 +59,11 @@ jobs:
       # Step 5: Check if Docker Hub credentials are configured
       - name: Check Docker Hub credentials
         id: dockerhub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          if [ -n "${{ secrets.DOCKER_USERNAME }}" ] && [ -n "${{ secrets.DOCKER_PASSWORD }}" ]; then
+          if [ -n "$DOCKER_USERNAME" ] && [ -n "$DOCKER_PASSWORD" ]; then
             echo "configured=true" >> $GITHUB_OUTPUT
           else
             echo "configured=false" >> $GITHUB_OUTPUT
@@ -87,6 +90,8 @@ jobs:
       # Creates tags for both versioned and latest images
       - name: Prepare tags
         id: tags
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           # Always tag for GitHub Container Registry
           TAGS="ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}"
@@ -94,8 +99,8 @@ jobs:
 
           # Optionally tag for Docker Hub if credentials are provided
           if [ "${{ steps.dockerhub.outputs.configured }}" == "true" ]; then
-            TAGS="$TAGS ${{ secrets.DOCKER_USERNAME }}/task-manager:${{ steps.tag.outputs.tag }}"
-            TAGS="$TAGS ${{ secrets.DOCKER_USERNAME }}/task-manager:latest"
+            TAGS="$TAGS $DOCKER_USERNAME/task-manager:${{ steps.tag.outputs.tag }}"
+            TAGS="$TAGS $DOCKER_USERNAME/task-manager:latest"
           fi
 
           # Output tags in multiline format for docker/build-push-action
@@ -137,6 +142,8 @@ jobs:
       # Step 11: Prepare release body
       - name: Prepare release body
         id: release-body
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           RELEASE_BODY="## 🚀 Release ${{ steps.tag.outputs.tag }}
 
@@ -150,8 +157,8 @@ jobs:
             RELEASE_BODY="$RELEASE_BODY
 
           **Docker Hub:**
-          - \`${{ secrets.DOCKER_USERNAME }}/task-manager:${{ steps.tag.outputs.tag }}\`
-          - \`${{ secrets.DOCKER_USERNAME }}/task-manager:latest\`"
+          - \`$DOCKER_USERNAME/task-manager:${{ steps.tag.outputs.tag }}\`
+          - \`$DOCKER_USERNAME/task-manager:latest\`"
           fi
 
           RELEASE_BODY="$RELEASE_BODY
