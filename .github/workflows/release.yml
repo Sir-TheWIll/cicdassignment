@@ -93,9 +93,13 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
+          # Convert repository name to lowercase (Docker requires lowercase)
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "repo_lower=$REPO_LOWER" >> $GITHUB_OUTPUT
+
           # Always tag for GitHub Container Registry
-          TAGS="ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}"
-          TAGS="$TAGS ghcr.io/${{ github.repository }}:latest"
+          TAGS="ghcr.io/$REPO_LOWER:${{ steps.tag.outputs.tag }}"
+          TAGS="$TAGS ghcr.io/$REPO_LOWER:latest"
 
           # Optionally tag for Docker Hub if credentials are provided
           if [ "${{ steps.dockerhub.outputs.configured }}" == "true" ]; then
@@ -135,8 +139,8 @@ jobs:
       # Step 10: Verify image was pushed successfully
       - name: Verify image push
         run: |
-          echo "Verifying image: ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}"
-          docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }} || exit 1
+          echo "Verifying image: ghcr.io/${{ steps.tags.outputs.repo_lower }}:${{ steps.tag.outputs.tag }}"
+          docker pull ghcr.io/${{ steps.tags.outputs.repo_lower }}:${{ steps.tag.outputs.tag }} || exit 1
           echo "✅ Image verified successfully!"
 
       # Step 11: Prepare release body
@@ -145,13 +149,14 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
+          REPO_LOWER="${{ steps.tags.outputs.repo_lower }}"
           RELEASE_BODY="## 🚀 Release ${{ steps.tag.outputs.tag }}
 
           ### 📦 Docker Images
 
           **GitHub Container Registry:**
-          - \`ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}\`
-          - \`ghcr.io/${{ github.repository }}:latest\`"
+          - \`ghcr.io/$REPO_LOWER:${{ steps.tag.outputs.tag }}\`
+          - \`ghcr.io/$REPO_LOWER:latest\`"
 
           if [ "${{ steps.dockerhub.outputs.configured }}" == "true" ]; then
             RELEASE_BODY="$RELEASE_BODY
@@ -173,13 +178,13 @@ jobs:
 
           \`\`\`bash
           # Pull the image
-          docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}
+          docker pull ghcr.io/$REPO_LOWER:${{ steps.tag.outputs.tag }}
 
           # Run the container
           docker run -p 3000:3000 \\
             -e DATABASE_URL=your_database_url \\
             -e JWT_SECRET=your_jwt_secret \\
-            ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}
+            ghcr.io/$REPO_LOWER:${{ steps.tag.outputs.tag }}
           \`\`\`
 
           Or use with docker-compose (see docker-compose.yml in repository).
