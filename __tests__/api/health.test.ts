@@ -22,4 +22,3 @@ describe('Health API', () => {
     });
   });
 });
-

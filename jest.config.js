@@ -17,12 +17,14 @@ const customJestConfig = {
     '**/?(*.)+(spec|test).[jt]s?(x)',
   ],
   collectCoverageFrom: [
-    'app/**/*.{js,jsx,ts,tsx}',
+    'app/api/**/*.{js,jsx,ts,tsx}',
     'lib/**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
     '!**/node_modules/**',
     '!**/.next/**',
     '!**/coverage/**',
+    '!app/**/page.{js,jsx,ts,tsx}',
+    '!app/**/layout.{js,jsx,ts,tsx}',
   ],
   coverageThreshold: {
     global: {

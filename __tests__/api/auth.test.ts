@@ -67,6 +67,53 @@ describe('Authentication API', () => {
       const response = await registerPOST(request);
       expect(response.status).toBe(400);
     });
+
+    it('should reject missing required fields', async () => {
+      const request = new NextRequest('http://localhost/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          username: 'testuser4',
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const response = await registerPOST(request);
+      expect(response.status).toBe(400);
+    });
+
+    it('should reject duplicate username or email', async () => {
+      // First register
+      const firstRequest = new NextRequest(
+        'http://localhost/api/auth/register',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            username: 'duplicateuser',
+            email: 'duplicate@example.com',
+            password: 'Test1234',
+          }),
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+      await registerPOST(firstRequest);
+
+      // Try to register again with same email
+      const secondRequest = new NextRequest(
+        'http://localhost/api/auth/register',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            username: 'duplicateuser2',
+            email: 'duplicate@example.com',
+            password: 'Test1234',
+          }),
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      const response = await registerPOST(secondRequest);
+      expect(response.status).toBe(409);
+    });
   });
 
   describe('POST /api/auth/login', () => {
@@ -116,6 +163,33 @@ describe('Authentication API', () => {
 
       const response = await loginPOST(request);
       expect(response.status).toBe(401);
+    });
+
+    it('should reject invalid email format', async () => {
+      const request = new NextRequest('http://localhost/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: 'invalid-email',
+          password: 'Test1234',
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const response = await loginPOST(request);
+      expect(response.status).toBe(400);
+    });
+
+    it('should reject missing required fields', async () => {
+      const request = new NextRequest('http://localhost/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: 'test@example.com',
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const response = await loginPOST(request);
+      expect(response.status).toBe(400);
     });
   });
 });

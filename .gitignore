@@ -38,3 +38,5 @@ next-env.d.ts
 .idea/
 *.swp
 *.swo
+
+.github/workflows/example-ci.yml

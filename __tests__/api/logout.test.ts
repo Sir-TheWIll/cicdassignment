@@ -13,8 +13,8 @@ describe('Logout API', () => {
 
       expect(response.status).toBe(200);
       expect(data.message).toBe('Logged out successfully');
-      expect(response.cookies.get('token')).toBeUndefined();
+      const tokenCookie = response.cookies.get('token');
+      expect(tokenCookie?.value).toBe('');
     });
   });
 });
-

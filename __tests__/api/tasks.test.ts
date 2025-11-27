@@ -46,6 +46,16 @@ describe('Tasks API', () => {
       const response = await GET(request);
       expect(response.status).toBe(401);
     });
+
+    it('should reject requests with invalid token', async () => {
+      const request = new NextRequest('http://localhost/api/tasks', {
+        headers: {
+          Cookie: 'token=invalid-token',
+        },
+      });
+      const response = await GET(request);
+      expect(response.status).toBe(401);
+    });
   });
 
   describe('POST /api/tasks', () => {
@@ -88,6 +98,60 @@ describe('Tasks API', () => {
       const response = await POST(request);
       expect(response.status).toBe(400);
     });
+
+    it('should reject POST with invalid token', async () => {
+      const request = new NextRequest('http://localhost/api/tasks', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'Test Task',
+          status: 'pending',
+          priority: 'high',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: 'token=invalid-token',
+        },
+      });
+
+      const response = await POST(request);
+      expect(response.status).toBe(401);
+    });
+
+    it('should reject POST with invalid status', async () => {
+      const request = new NextRequest('http://localhost/api/tasks', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'Test Task',
+          status: 'invalid_status',
+          priority: 'high',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `token=${authToken}`,
+        },
+      });
+
+      const response = await POST(request);
+      expect(response.status).toBe(400);
+    });
+
+    it('should reject POST with invalid priority', async () => {
+      const request = new NextRequest('http://localhost/api/tasks', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'Test Task',
+          status: 'pending',
+          priority: 'invalid_priority',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `token=${authToken}`,
+        },
+      });
+
+      const response = await POST(request);
+      expect(response.status).toBe(400);
+    });
   });
 
   describe('PATCH /api/tasks/[id]', () => {
@@ -114,20 +178,17 @@ describe('Tasks API', () => {
     });
 
     it('should update a task successfully', async () => {
-      const request = new NextRequest(
-        `http://localhost/api/tasks/${taskId}`,
-        {
-          method: 'PATCH',
-          body: JSON.stringify({
-            title: 'Updated Task',
-            status: 'in_progress',
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-            Cookie: `token=${authToken}`,
-          },
-        }
-      );
+      const request = new NextRequest(`http://localhost/api/tasks/${taskId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: 'Updated Task',
+          status: 'in_progress',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `token=${authToken}`,
+        },
+      });
 
       const response = await PATCH(request, { params: { id: String(taskId) } });
       const data = await response.json();
@@ -138,18 +199,15 @@ describe('Tasks API', () => {
     });
 
     it('should reject update without authentication', async () => {
-      const request = new NextRequest(
-        `http://localhost/api/tasks/${taskId}`,
-        {
-          method: 'PATCH',
-          body: JSON.stringify({
-            title: 'Updated Task',
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const request = new NextRequest(`http://localhost/api/tasks/${taskId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: 'Updated Task',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       const response = await PATCH(request, { params: { id: String(taskId) } });
       expect(response.status).toBe(401);
@@ -169,6 +227,52 @@ describe('Tasks API', () => {
 
       const response = await PATCH(request, { params: { id: 'invalid' } });
       expect(response.status).toBe(400);
+    });
+
+    it('should reject update with no fields', async () => {
+      const request = new NextRequest(`http://localhost/api/tasks/${taskId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({}),
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `token=${authToken}`,
+        },
+      });
+
+      const response = await PATCH(request, { params: { id: String(taskId) } });
+      expect(response.status).toBe(400);
+    });
+
+    it('should reject update with invalid token', async () => {
+      const request = new NextRequest(`http://localhost/api/tasks/${taskId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: 'Updated Task',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: 'token=invalid-token',
+        },
+      });
+
+      const response = await PATCH(request, { params: { id: String(taskId) } });
+      expect(response.status).toBe(401);
+    });
+
+    it('should reject update of non-existent task', async () => {
+      const request = new NextRequest('http://localhost/api/tasks/99999', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: 'Updated Task',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `token=${authToken}`,
+        },
+      });
+
+      const response = await PATCH(request, { params: { id: '99999' } });
+      expect(response.status).toBe(404);
     });
   });
 
@@ -196,17 +300,16 @@ describe('Tasks API', () => {
     });
 
     it('should delete a task successfully', async () => {
-      const request = new NextRequest(
-        `http://localhost/api/tasks/${taskId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Cookie: `token=${authToken}`,
-          },
-        }
-      );
+      const request = new NextRequest(`http://localhost/api/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          Cookie: `token=${authToken}`,
+        },
+      });
 
-      const response = await DELETE(request, { params: { id: String(taskId) } });
+      const response = await DELETE(request, {
+        params: { id: String(taskId) },
+      });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -214,14 +317,13 @@ describe('Tasks API', () => {
     });
 
     it('should reject delete without authentication', async () => {
-      const request = new NextRequest(
-        `http://localhost/api/tasks/${taskId}`,
-        {
-          method: 'DELETE',
-        }
-      );
+      const request = new NextRequest(`http://localhost/api/tasks/${taskId}`, {
+        method: 'DELETE',
+      });
 
-      const response = await DELETE(request, { params: { id: String(taskId) } });
+      const response = await DELETE(request, {
+        params: { id: String(taskId) },
+      });
       expect(response.status).toBe(401);
     });
 
@@ -235,6 +337,32 @@ describe('Tasks API', () => {
 
       const response = await DELETE(request, { params: { id: 'invalid' } });
       expect(response.status).toBe(400);
+    });
+
+    it('should reject delete with invalid token', async () => {
+      const request = new NextRequest(`http://localhost/api/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          Cookie: 'token=invalid-token',
+        },
+      });
+
+      const response = await DELETE(request, {
+        params: { id: String(taskId) },
+      });
+      expect(response.status).toBe(401);
+    });
+
+    it('should reject delete of non-existent task', async () => {
+      const request = new NextRequest('http://localhost/api/tasks/99999', {
+        method: 'DELETE',
+        headers: {
+          Cookie: `token=${authToken}`,
+        },
+      });
+
+      const response = await DELETE(request, { params: { id: '99999' } });
+      expect(response.status).toBe(404);
     });
   });
 });
