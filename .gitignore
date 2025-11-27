@@ -40,3 +40,4 @@ next-env.d.ts
 *.swo
 
 .github/workflows/example-ci.yml
+RELEASE_WORKFLOW_GUIDE.md
