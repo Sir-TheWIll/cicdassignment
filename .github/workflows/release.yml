@@ -134,49 +134,66 @@ jobs:
           docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }} || exit 1
           echo "✅ Image verified successfully!"
 
-      # Step 11: Create GitHub Release with release notes
+      # Step 11: Prepare release body
+      - name: Prepare release body
+        id: release-body
+        run: |
+          RELEASE_BODY="## 🚀 Release ${{ steps.tag.outputs.tag }}
+
+          ### 📦 Docker Images
+
+          **GitHub Container Registry:**
+          - \`ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}\`
+          - \`ghcr.io/${{ github.repository }}:latest\`"
+
+          if [ "${{ steps.dockerhub.outputs.configured }}" == "true" ]; then
+            RELEASE_BODY="$RELEASE_BODY
+
+          **Docker Hub:**
+          - \`${{ secrets.DOCKER_USERNAME }}/task-manager:${{ steps.tag.outputs.tag }}\`
+          - \`${{ secrets.DOCKER_USERNAME }}/task-manager:latest\`"
+          fi
+
+          RELEASE_BODY="$RELEASE_BODY
+
+          ### 📝 Changes in this Release
+
+          ${{ steps.changelog.outputs.changelog }}
+
+          ### 🐳 Usage
+
+          Pull and run the Docker image:
+
+          \`\`\`bash
+          # Pull the image
+          docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}
+
+          # Run the container
+          docker run -p 3000:3000 \\
+            -e DATABASE_URL=your_database_url \\
+            -e JWT_SECRET=your_jwt_secret \\
+            ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}
+          \`\`\`
+
+          Or use with docker-compose (see docker-compose.yml in repository).
+
+          ### 📊 Build Information
+
+          - **Commit:** ${{ github.sha }}
+          - **Workflow:** ${{ github.workflow }}
+          - **Build Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$RELEASE_BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # Step 12: Create GitHub Release with release notes
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
           name: Release ${{ steps.tag.outputs.tag }}
-          body: |
-            ## 🚀 Release ${{ steps.tag.outputs.tag }}
-
-            ### 📦 Docker Images
-
-            **GitHub Container Registry:**
-            - `ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}`
-            - `ghcr.io/${{ github.repository }}:latest`
-
-            ${{ secrets.DOCKER_USERNAME && format('**Docker Hub:**\n- `{0}/task-manager:{1}`\n- `{0}/task-manager:latest`\n', secrets.DOCKER_USERNAME, steps.tag.outputs.tag) || '' }}
-
-            ### 📝 Changes in this Release
-
-            ${{ steps.changelog.outputs.changelog }}
-
-            ### 🐳 Usage
-
-            Pull and run the Docker image:
-
-            ```bash
-            # Pull the image
-            docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}
-
-            # Run the container
-            docker run -p 3000:3000 \
-              -e DATABASE_URL=your_database_url \
-              -e JWT_SECRET=your_jwt_secret \
-              ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}
-            ```
-
-            Or use with docker-compose (see docker-compose.yml in repository).
-
-            ### 📊 Build Information
-
-            - **Commit:** ${{ github.sha }}
-            - **Workflow:** ${{ github.workflow }}
-            - **Build Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          body: ${{ steps.release-body.outputs.body }}
           draft: false
           prerelease: false
           generate_release_notes: true # Auto-generate release notes from PRs
