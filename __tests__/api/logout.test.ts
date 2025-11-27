@@ -1,14 +1,9 @@
 import { POST } from '@/app/api/auth/logout/route';
-import { NextRequest } from 'next/server';
 
 describe('Logout API', () => {
   describe('POST /api/auth/logout', () => {
     it('should logout successfully', async () => {
-      const request = new NextRequest('http://localhost/api/auth/logout', {
-        method: 'POST',
-      });
-
-      const response = await POST(request);
+      const response = await POST();
       const data = await response.json();
 
       expect(response.status).toBe(200);
