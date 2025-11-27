@@ -18,7 +18,10 @@ export async function POST(request: NextRequest) {
     );
 
     return NextResponse.json(
-      { message: 'User created successfully', user: { id: user.id, username: user.username, email: user.email } },
+      {
+        message: 'User created successfully',
+        user: { id: user.id, username: user.username, email: user.email },
+      },
       { status: 201 }
     );
   } catch (error: any) {
@@ -44,4 +47,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

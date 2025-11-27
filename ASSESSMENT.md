@@ -22,6 +22,7 @@
 ## Overview
 
 This is a **2-day comprehensive assessment** designed to evaluate your knowledge and practical skills in:
+
 - Docker containerization
 - Database setup and management
 - CI/CD pipeline implementation with GitHub Actions
@@ -49,11 +50,13 @@ This is a **2-day comprehensive assessment** designed to evaluate your knowledge
 ## Project Overview
 
 You are given a **Task Manager Application** built with Next.js and TypeScript. The application is a full-stack web application that allows users to:
+
 - Register and authenticate
 - Create, view, and manage tasks
 - Organize tasks by status and priority
 
 **Current State:**
+
 - ✅ Application code is complete and functional
 - ✅ Database schema is defined in code
 - ❌ **NOT dockerized** - You need to create Dockerfiles
@@ -153,6 +156,7 @@ cloudops-cicd-evaluation/
 **Objective:** Create an optimized, production-ready Dockerfile for the Next.js application.
 
 **Requirements:**
+
 - Use multi-stage builds (build stage + production stage)
 - Use appropriate base images (Node.js Alpine recommended)
 - Set proper working directory
@@ -165,12 +169,14 @@ cloudops-cicd-evaluation/
 - Optimize for layer caching
 
 **Deliverables:**
+
 - `Dockerfile` in the root directory
 - `.dockerignore` file
 - Application should build successfully: `docker build -t task-manager .`
 - Application should run: `docker run -p 3000:3000 task-manager`
 
 **Evaluation Points:**
+
 - Multi-stage build implementation
 - Security best practices (non-root user)
 - Layer optimization
@@ -183,6 +189,7 @@ cloudops-cicd-evaluation/
 **Objective:** Configure PostgreSQL database using Docker and connect the Next.js app to it.
 
 **Requirements:**
+
 - Create a `docker-compose.yml` file
 - Set up PostgreSQL service with:
   - Appropriate PostgreSQL version (15 or latest)
@@ -198,6 +205,7 @@ cloudops-cicd-evaluation/
 - Create a `.env` file (DO NOT commit this to git)
 
 **Deliverables:**
+
 - `docker-compose.yml` file
 - `.env` file (local only, not committed)
 - Both containers should start: `docker-compose up -d`
@@ -205,6 +213,7 @@ cloudops-cicd-evaluation/
 - Database tables should be created automatically on first run
 
 **Evaluation Points:**
+
 - Proper docker-compose configuration
 - Environment variable management
 - Database persistence
@@ -218,6 +227,7 @@ cloudops-cicd-evaluation/
 **Objective:** Ensure the application properly connects to the database and initializes schema.
 
 **Requirements:**
+
 - Verify database connection string format
 - Ensure `initDatabase()` function runs on application start
 - Handle connection errors gracefully
@@ -226,12 +236,14 @@ cloudops-cicd-evaluation/
 - Ensure database persists data across container restarts
 
 **Deliverables:**
+
 - Application successfully connects to database
 - Database schema is created automatically
 - Can register users and create tasks
 - Data persists after container restart
 
 **Evaluation Points:**
+
 - Connection handling
 - Error handling
 - Data persistence
@@ -244,6 +256,7 @@ cloudops-cicd-evaluation/
 **Objective:** Ensure all tests pass and application works correctly.
 
 **Requirements:**
+
 - Run all tests: `npm test`
 - Fix any failing tests
 - Ensure test coverage meets minimum requirements (60%)
@@ -256,12 +269,14 @@ cloudops-cicd-evaluation/
 - Verify health check endpoint: `http://localhost:3000/api/health`
 
 **Deliverables:**
+
 - All tests passing
 - Test coverage report
 - Manual testing completed
 - Health check working
 
 **Evaluation Points:**
+
 - Test execution
 - Test fixes
 - Coverage requirements
@@ -275,6 +290,7 @@ cloudops-cicd-evaluation/
 **Objective:** Create a CI pipeline that builds the application on every push.
 
 **Requirements:**
+
 - Create `.github/workflows/ci.yml`
 - Trigger on push to main and pull requests
 - Set up job to:
@@ -289,12 +305,14 @@ cloudops-cicd-evaluation/
 - Fail the pipeline if any step fails
 
 **Deliverables:**
+
 - `.github/workflows/ci.yml` file
 - Pipeline runs on push/PR
 - Build succeeds
 - Linting and type checking pass
 
 **Evaluation Points:**
+
 - Workflow structure
 - Proper triggers
 - Caching implementation
@@ -307,6 +325,7 @@ cloudops-cicd-evaluation/
 **Objective:** Create a test pipeline that runs all tests and generates coverage reports.
 
 **Requirements:**
+
 - Extend or create separate workflow for testing
 - Set up PostgreSQL service in GitHub Actions
 - Configure test database connection
@@ -318,12 +337,14 @@ cloudops-cicd-evaluation/
 - Run tests in parallel if possible
 
 **Deliverables:**
+
 - Test workflow configured
 - All tests pass in CI
 - Coverage reports generated
 - Coverage threshold enforced
 
 **Evaluation Points:**
+
 - Test execution in CI
 - Database service setup
 - Coverage reporting
@@ -336,6 +357,7 @@ cloudops-cicd-evaluation/
 **Objective:** Implement code quality checks in the CI pipeline.
 
 **Requirements:**
+
 - Add Prettier formatting check: `npm run format:check`
 - Add ESLint checks (already in lint script)
 - Add security vulnerability scanning (npm audit or Snyk)
@@ -344,12 +366,14 @@ cloudops-cicd-evaluation/
 - Provide clear error messages
 
 **Deliverables:**
+
 - Quality checks in pipeline
 - Formatting validation
 - Security scanning
 - Pipeline fails on quality issues
 
 **Evaluation Points:**
+
 - Code quality tools
 - Security scanning
 - Pipeline integration
@@ -362,6 +386,7 @@ cloudops-cicd-evaluation/
 **Objective:** Create a release workflow that builds and tags Docker images.
 
 **Requirements:**
+
 - Create `.github/workflows/release.yml`
 - Trigger on tag creation (e.g., `v1.0.0`)
 - Build Docker image
@@ -372,12 +397,14 @@ cloudops-cicd-evaluation/
 - Create GitHub release
 
 **Deliverables:**
+
 - Release workflow file
 - Docker image builds on tag
 - Image pushed to registry
 - GitHub release created
 
 **Evaluation Points:**
+
 - Release automation
 - Docker image management
 - Secrets management
@@ -390,6 +417,7 @@ cloudops-cicd-evaluation/
 **Objective:** Implement security best practices throughout the application.
 
 **Requirements:**
+
 - Review and secure environment variables
 - Ensure secrets are not hardcoded
 - Implement proper input validation (already done, verify it works)
@@ -401,12 +429,14 @@ cloudops-cicd-evaluation/
 - Ensure `.env` files are in `.gitignore`
 
 **Deliverables:**
+
 - Security review completed
 - Secrets properly managed
 - Security documentation
 - No secrets in code or images
 
 **Evaluation Points:**
+
 - Secrets management
 - Input validation
 - Docker security
@@ -419,6 +449,7 @@ cloudops-cicd-evaluation/
 **Objective:** Create comprehensive documentation for the project.
 
 **Requirements:**
+
 - Create `README.md` with:
   - Project description
   - Prerequisites
@@ -435,12 +466,14 @@ cloudops-cicd-evaluation/
 - Document any custom configurations
 
 **Deliverables:**
+
 - Complete README.md
 - Clear instructions
 - Examples provided
 - Troubleshooting guide
 
 **Evaluation Points:**
+
 - Documentation completeness
 - Clarity and readability
 - Examples and usage
@@ -605,6 +638,7 @@ cloudops-cicd-evaluation/
 ### Issue: Database Connection Fails
 
 **Solution:**
+
 - Check DATABASE_URL format
 - Ensure database container is running
 - Verify network configuration in docker-compose
@@ -613,6 +647,7 @@ cloudops-cicd-evaluation/
 ### Issue: Tests Fail in CI
 
 **Solution:**
+
 - Ensure PostgreSQL service is configured in GitHub Actions
 - Check test database connection string
 - Verify environment variables are set
@@ -621,6 +656,7 @@ cloudops-cicd-evaluation/
 ### Issue: Docker Build Fails
 
 **Solution:**
+
 - Check Dockerfile syntax
 - Verify base image exists
 - Check file paths in COPY commands
@@ -629,6 +665,7 @@ cloudops-cicd-evaluation/
 ### Issue: Application Won't Start
 
 **Solution:**
+
 - Check environment variables
 - Verify database is ready before app starts
 - Check application logs
@@ -672,6 +709,7 @@ If you have questions during the assessment:
 Use this checklist to ensure you've completed everything:
 
 ### Day 1
+
 - [ ] Dockerfile created and optimized
 - [ ] .dockerignore created
 - [ ] docker-compose.yml configured
@@ -682,6 +720,7 @@ Use this checklist to ensure you've completed everything:
 - [ ] Application tested manually
 
 ### Day 2
+
 - [ ] CI workflow created
 - [ ] Build pipeline working
 - [ ] Test pipeline working
@@ -699,4 +738,3 @@ Use this checklist to ensure you've completed everything:
 **Assessment Duration:** 2 days  
 **Total Estimated Time:** 16 hours  
 **Difficulty Level:** Junior DevOps Engineer
-

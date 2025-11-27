@@ -11,7 +11,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = loginSchema.parse(body);
 
-    const user = await authenticateUser(validatedData.email, validatedData.password);
+    const user = await authenticateUser(
+      validatedData.email,
+      validatedData.password
+    );
 
     if (!user) {
       return NextResponse.json(
@@ -23,7 +26,10 @@ export async function POST(request: NextRequest) {
     const token = generateToken(user);
 
     const response = NextResponse.json(
-      { message: 'Login successful', user: { id: user.id, username: user.username, email: user.email } },
+      {
+        message: 'Login successful',
+        user: { id: user.id, username: user.username, email: user.email },
+      },
       { status: 200 }
     );
 
@@ -51,4 +57,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

@@ -93,8 +93,11 @@ export default function Login() {
           </button>
         </form>
         <p style={{ marginTop: '20px', textAlign: 'center', color: '#666' }}>
-          Don't have an account?{' '}
-          <Link href="/register" style={{ color: '#667eea', fontWeight: '500' }}>
+          Don&apos;t have an account?{' '}
+          <Link
+            href="/register"
+            style={{ color: '#667eea', fontWeight: '500' }}
+          >
             Register here
           </Link>
         </p>
@@ -102,4 +105,3 @@ export default function Login() {
     </div>
   );
 }
-

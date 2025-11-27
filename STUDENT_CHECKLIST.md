@@ -5,6 +5,7 @@ Use this checklist to track your progress through the assessment.
 ## Day 1: Dockerization and Database Setup
 
 ### Task 1.1: Dockerfile Creation
+
 - [ ] Created `Dockerfile` with multi-stage build
 - [ ] Used appropriate base images (Node.js Alpine)
 - [ ] Set proper working directory
@@ -15,6 +16,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] Docker run works: `docker run -p 3000:3000 task-manager`
 
 ### Task 1.2: Docker Compose Setup
+
 - [ ] Created `docker-compose.yml` file
 - [ ] Configured PostgreSQL service
 - [ ] Configured Next.js app service
@@ -26,6 +28,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] Containers communicate properly
 
 ### Task 1.3: Database Connection
+
 - [ ] Application connects to database
 - [ ] Database schema initializes automatically
 - [ ] Can register users
@@ -34,6 +37,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] Connection errors handled gracefully
 
 ### Task 1.4: Testing
+
 - [ ] All tests pass: `npm test`
 - [ ] Test coverage meets 60% threshold
 - [ ] Manual testing completed:
@@ -47,6 +51,7 @@ Use this checklist to track your progress through the assessment.
 ## Day 2: CI/CD Pipeline and Security
 
 ### Task 2.1: Build Pipeline
+
 - [ ] Created `.github/workflows/ci.yml`
 - [ ] Pipeline triggers on push/PR
 - [ ] Checks out code
@@ -58,6 +63,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] Pipeline passes on GitHub
 
 ### Task 2.2: Test Pipeline
+
 - [ ] PostgreSQL service configured in workflow
 - [ ] Tests run in CI
 - [ ] Coverage report generated
@@ -66,6 +72,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] All tests pass in CI
 
 ### Task 2.3: Quality Checks
+
 - [ ] Prettier formatting check added
 - [ ] ESLint checks pass
 - [ ] Security scanning implemented (npm audit)
@@ -73,6 +80,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] Clear error messages provided
 
 ### Task 2.4: Release Workflow
+
 - [ ] Created release workflow
 - [ ] Triggers on tag creation
 - [ ] Builds Docker image
@@ -82,6 +90,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] Creates GitHub release
 
 ### Task 2.5: Security Hardening
+
 - [ ] Environment variables secured
 - [ ] No secrets in code
 - [ ] Input validation verified
@@ -91,6 +100,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] Security documentation added
 
 ### Task 2.6: Documentation
+
 - [ ] README.md created/updated
 - [ ] Installation instructions clear
 - [ ] Docker setup documented
@@ -102,6 +112,7 @@ Use this checklist to track your progress through the assessment.
 ## Final Checks
 
 ### Code Quality
+
 - [ ] All code committed to Git
 - [ ] Clear commit messages
 - [ ] No console.logs in production code
@@ -109,6 +120,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] No TypeScript errors
 
 ### Repository
+
 - [ ] Repository is public or accessible
 - [ ] All required files present
 - [ ] `.env` NOT committed
@@ -116,6 +128,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] No secrets in repository
 
 ### Functionality
+
 - [ ] Application runs locally with Docker
 - [ ] All features work correctly
 - [ ] Database operations work
@@ -123,6 +136,7 @@ Use this checklist to track your progress through the assessment.
 - [ ] API endpoints respond correctly
 
 ### CI/CD
+
 - [ ] CI pipeline passes
 - [ ] All checks green
 - [ ] Coverage report available
@@ -141,4 +155,3 @@ Use this checklist to track your progress through the assessment.
 ---
 
 **Good luck! 🚀**
-

@@ -23,10 +23,18 @@ export default function Home() {
           A comprehensive task management system for organizing your work
         </p>
         <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
-          <Link href="/register" className="btn btn-primary" style={{ fontSize: '16px', padding: '12px 30px' }}>
+          <Link
+            href="/register"
+            className="btn btn-primary"
+            style={{ fontSize: '16px', padding: '12px 30px' }}
+          >
             Get Started
           </Link>
-          <Link href="/login" className="btn btn-secondary" style={{ fontSize: '16px', padding: '12px 30px' }}>
+          <Link
+            href="/login"
+            className="btn btn-secondary"
+            style={{ fontSize: '16px', padding: '12px 30px' }}
+          >
             Sign In
           </Link>
         </div>
@@ -34,4 +42,3 @@ export default function Home() {
     </div>
   );
 }
-

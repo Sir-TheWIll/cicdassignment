@@ -5,7 +5,10 @@ export const registerSchema = z.object({
     .string()
     .min(3, 'Username must be at least 3 characters')
     .max(50, 'Username must be at most 50 characters')
-    .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      'Username can only contain letters, numbers, and underscores'
+    ),
   email: z.string().email('Invalid email address'),
   password: z
     .string()
@@ -25,10 +28,12 @@ export const taskSchema = z.object({
     .string()
     .min(1, 'Title is required')
     .max(255, 'Title must be at most 255 characters'),
-  description: z.string().max(2000, 'Description must be at most 2000 characters').optional(),
+  description: z
+    .string()
+    .max(2000, 'Description must be at most 2000 characters')
+    .optional(),
   status: z.enum(['pending', 'in_progress', 'completed']).default('pending'),
   priority: z.enum(['low', 'medium', 'high']).default('medium'),
 });
 
 export const updateTaskSchema = taskSchema.partial();
-

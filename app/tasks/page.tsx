@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import '../globals.css';
@@ -27,11 +27,7 @@ export default function Tasks() {
   });
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const response = await fetch('/api/tasks');
       if (response.status === 401) {
@@ -49,7 +45,11 @@ export default function Tasks() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +61,12 @@ export default function Tasks() {
       });
 
       if (response.ok) {
-        setFormData({ title: '', description: '', status: 'pending', priority: 'medium' });
+        setFormData({
+          title: '',
+          description: '',
+          status: 'pending',
+          priority: 'medium',
+        });
         setShowForm(false);
         fetchTasks();
       } else {
@@ -109,7 +114,10 @@ export default function Tasks() {
       <div className="header">
         <h1>My Tasks</h1>
         <nav className="nav">
-          <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="btn btn-primary"
+          >
             {showForm ? 'Cancel' : 'New Task'}
           </button>
           <button onClick={handleLogout} className="btn btn-secondary">
@@ -118,7 +126,11 @@ export default function Tasks() {
         </nav>
       </div>
 
-      {error && <div className="error" style={{ marginBottom: '20px' }}>{error}</div>}
+      {error && (
+        <div className="error" style={{ marginBottom: '20px' }}>
+          {error}
+        </div>
+      )}
 
       {showForm && (
         <div className="card" style={{ marginBottom: '30px' }}>
@@ -147,7 +159,13 @@ export default function Tasks() {
                 rows={4}
               />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '15px',
+              }}
+            >
               <div className="form-group">
                 <label htmlFor="status">Status</label>
                 <select
@@ -195,12 +213,20 @@ export default function Tasks() {
         ) : (
           tasks.map((task) => (
             <div key={task.id} className="card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'start',
+                }}
+              >
                 <div style={{ flex: 1 }}>
                   <h3>{task.title}</h3>
                   {task.description && <p>{task.description}</p>}
                   <div style={{ marginTop: '10px' }}>
-                    <span className={`badge badge-${task.status.replace('_', '-')}`}>
+                    <span
+                      className={`badge badge-${task.status.replace('_', '-')}`}
+                    >
                       {task.status.replace('_', ' ')}
                     </span>
                     <span className={`badge badge-${task.priority}`}>
@@ -226,4 +252,3 @@ export default function Tasks() {
     </div>
   );
 }
-

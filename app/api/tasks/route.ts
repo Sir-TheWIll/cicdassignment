@@ -53,7 +53,13 @@ export async function POST(request: NextRequest) {
     const pool = getDbPool();
     const result = await pool.query(
       'INSERT INTO tasks (title, description, status, priority, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [validatedData.title, validatedData.description || null, validatedData.status, validatedData.priority, user.id]
+      [
+        validatedData.title,
+        validatedData.description || null,
+        validatedData.status,
+        validatedData.priority,
+        user.id,
+      ]
     );
 
     return NextResponse.json(result.rows[0], { status: 201 });
@@ -72,4 +78,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

@@ -22,6 +22,7 @@ A full-stack Task Manager application built with Next.js, TypeScript, and Postgr
 ## Overview
 
 This is a production-ready Task Manager application that demonstrates:
+
 - Docker containerization with multi-stage builds
 - Docker Compose for multi-container orchestration
 - PostgreSQL database setup and management
@@ -53,22 +54,26 @@ Before you begin, ensure you have the following installed:
 ## Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone <repository-url>
    cd cloudops-cicd-evaluation
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables:**
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Edit `.env` and update the values:
+
    ```env
    POSTGRES_USER=postgres
    POSTGRES_PASSWORD=your-secure-password
@@ -101,6 +106,7 @@ docker-compose up -d
 ```
 
 This command will:
+
 - Start PostgreSQL database container
 - Wait for database to be healthy
 - Start the Next.js application container
@@ -164,14 +170,14 @@ docker-compose up -d --build
 
 The following environment variables are required:
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/dbname` |
-| `JWT_SECRET` | Secret key for JWT token signing | Generate with: `openssl rand -base64 32` |
-| `POSTGRES_USER` | PostgreSQL username | `postgres` |
-| `POSTGRES_PASSWORD` | PostgreSQL password | `your-secure-password` |
-| `POSTGRES_DB` | PostgreSQL database name | `taskmanager` |
-| `NODE_ENV` | Node.js environment | `production` or `development` |
+| Variable            | Description                      | Example                                   |
+| ------------------- | -------------------------------- | ----------------------------------------- |
+| `DATABASE_URL`      | PostgreSQL connection string     | `postgresql://user:pass@host:5432/dbname` |
+| `JWT_SECRET`        | Secret key for JWT token signing | Generate with: `openssl rand -base64 32`  |
+| `POSTGRES_USER`     | PostgreSQL username              | `postgres`                                |
+| `POSTGRES_PASSWORD` | PostgreSQL password              | `your-secure-password`                    |
+| `POSTGRES_DB`       | PostgreSQL database name         | `taskmanager`                             |
+| `NODE_ENV`          | Node.js environment              | `production` or `development`             |
 
 ### Generating Secure Secrets
 
@@ -212,6 +218,7 @@ curl http://localhost:3000/api/health
 ```
 
 Expected response:
+
 ```json
 {
   "status": "healthy",
@@ -255,6 +262,7 @@ The project includes comprehensive GitHub Actions workflows for continuous integ
 ### CI Pipeline (`.github/workflows/ci.yml`)
 
 **Triggers:**
+
 - Push to `main` branch
 - Pull requests to `main` branch
 
@@ -285,9 +293,11 @@ The project includes comprehensive GitHub Actions workflows for continuous integ
 ### Release Pipeline (`.github/workflows/release.yml`)
 
 **Triggers:**
+
 - Push of tags matching `v*` pattern (e.g., `v1.0.0`)
 
 **Actions:**
+
 - Builds Docker image
 - Tags image with version and `latest`
 - Pushes to GitHub Container Registry (ghcr.io)
@@ -344,6 +354,7 @@ cloudops-cicd-evaluation/
 ### Authentication
 
 - `POST /api/auth/register` - Register a new user
+
   ```json
   {
     "username": "john_doe",
@@ -353,6 +364,7 @@ cloudops-cicd-evaluation/
   ```
 
 - `POST /api/auth/login` - Login user
+
   ```json
   {
     "email": "john@example.com",
@@ -387,29 +399,30 @@ All task endpoints require authentication (JWT token in cookie).
 
 ### Users Table
 
-| Column | Type | Constraints |
-|--------|------|-------------|
-| `id` | SERIAL | PRIMARY KEY |
-| `username` | VARCHAR(50) | UNIQUE, NOT NULL |
-| `email` | VARCHAR(100) | UNIQUE, NOT NULL |
-| `password_hash` | VARCHAR(255) | NOT NULL |
-| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
-| `updated_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| Column          | Type         | Constraints               |
+| --------------- | ------------ | ------------------------- |
+| `id`            | SERIAL       | PRIMARY KEY               |
+| `username`      | VARCHAR(50)  | UNIQUE, NOT NULL          |
+| `email`         | VARCHAR(100) | UNIQUE, NOT NULL          |
+| `password_hash` | VARCHAR(255) | NOT NULL                  |
+| `created_at`    | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP |
+| `updated_at`    | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP |
 
 ### Tasks Table
 
-| Column | Type | Constraints |
-|--------|------|-------------|
-| `id` | SERIAL | PRIMARY KEY |
-| `title` | VARCHAR(255) | NOT NULL |
-| `description` | TEXT | |
-| `status` | VARCHAR(20) | DEFAULT 'pending' |
-| `priority` | VARCHAR(20) | DEFAULT 'medium' |
-| `user_id` | INTEGER | FOREIGN KEY → users(id) |
-| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
-| `updated_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| Column        | Type         | Constraints               |
+| ------------- | ------------ | ------------------------- |
+| `id`          | SERIAL       | PRIMARY KEY               |
+| `title`       | VARCHAR(255) | NOT NULL                  |
+| `description` | TEXT         |                           |
+| `status`      | VARCHAR(20)  | DEFAULT 'pending'         |
+| `priority`    | VARCHAR(20)  | DEFAULT 'medium'          |
+| `user_id`     | INTEGER      | FOREIGN KEY → users(id)   |
+| `created_at`  | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP |
+| `updated_at`  | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP |
 
 **Indexes:**
+
 - `idx_tasks_user_id` on `tasks(user_id)`
 - `idx_tasks_status` on `tasks(status)`
 - `idx_users_email` on `users(email)`
@@ -458,6 +471,7 @@ The database schema is automatically initialized when the application starts.
 **Symptoms:** Application can't connect to database
 
 **Solutions:**
+
 1. Verify `DATABASE_URL` format: `postgresql://user:password@host:port/database`
 2. Ensure PostgreSQL container is running: `docker-compose ps`
 3. Check database logs: `docker-compose logs postgres`
@@ -469,6 +483,7 @@ The database schema is automatically initialized when the application starts.
 **Symptoms:** Container exits immediately or fails to start
 
 **Solutions:**
+
 1. Check container logs: `docker-compose logs app`
 2. Verify environment variables are set correctly
 3. Ensure database is healthy before app starts (check `depends_on` in docker-compose)
@@ -480,6 +495,7 @@ The database schema is automatically initialized when the application starts.
 **Symptoms:** GitHub Actions test job fails
 
 **Solutions:**
+
 1. Ensure PostgreSQL service is configured in workflow
 2. Verify `DATABASE_URL` environment variable is set in workflow
 3. Check test database connection string format
@@ -491,6 +507,7 @@ The database schema is automatically initialized when the application starts.
 **Symptoms:** `docker build` command fails
 
 **Solutions:**
+
 1. Check Dockerfile syntax
 2. Verify base image exists: `docker pull node:20-alpine`
 3. Check file paths in COPY commands
@@ -502,6 +519,7 @@ The database schema is automatically initialized when the application starts.
 **Symptoms:** CI fails with coverage below 60%
 
 **Solutions:**
+
 1. Run coverage locally: `npm run test:coverage`
 2. Review coverage report in `coverage/` directory
 3. Add tests for uncovered code paths
@@ -513,6 +531,7 @@ The database schema is automatically initialized when the application starts.
 **Symptoms:** Error: `port 3000 is already in use`
 
 **Solutions:**
+
 1. Find process using port: `lsof -i :3000` (macOS/Linux)
 2. Stop the process or change port in `docker-compose.yml`
 3. Check for other Docker containers: `docker ps`
@@ -522,6 +541,7 @@ The database schema is automatically initialized when the application starts.
 **Symptoms:** Data lost after container restart
 
 **Solutions:**
+
 1. Verify volume is configured in `docker-compose.yml`
 2. Check volume exists: `docker volume ls`
 3. Don't use `docker-compose down -v` (removes volumes)
@@ -529,18 +549,18 @@ The database schema is automatically initialized when the application starts.
 
 ## Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm start` | Start production server |
-| `npm test` | Run tests |
-| `npm run test:watch` | Run tests in watch mode |
+| Script                  | Description                    |
+| ----------------------- | ------------------------------ |
+| `npm run dev`           | Start development server       |
+| `npm run build`         | Build for production           |
+| `npm start`             | Start production server        |
+| `npm test`              | Run tests                      |
+| `npm run test:watch`    | Run tests in watch mode        |
 | `npm run test:coverage` | Run tests with coverage report |
-| `npm run lint` | Run ESLint |
-| `npm run type-check` | Run TypeScript type checking |
-| `npm run format` | Format code with Prettier |
-| `npm run format:check` | Check code formatting |
+| `npm run lint`          | Run ESLint                     |
+| `npm run type-check`    | Run TypeScript type checking   |
+| `npm run format`        | Format code with Prettier      |
+| `npm run format:check`  | Check code formatting          |
 
 ## Contributing
 

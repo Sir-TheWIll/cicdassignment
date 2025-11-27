@@ -4,7 +4,8 @@ import { NextRequest } from 'next/server';
 import { initDatabase, closeDatabase } from '@/lib/db';
 
 // Mock environment variables
-process.env.DATABASE_URL = process.env.DATABASE_URL || 'postgresql://test:test@localhost:5432/testdb';
+process.env.DATABASE_URL =
+  process.env.DATABASE_URL || 'postgresql://test:test@localhost:5432/testdb';
 process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret-key';
 
 describe('Authentication API', () => {
@@ -71,15 +72,18 @@ describe('Authentication API', () => {
   describe('POST /api/auth/login', () => {
     it('should login with valid credentials', async () => {
       // First register a user
-      const registerRequest = new NextRequest('http://localhost/api/auth/register', {
-        method: 'POST',
-        body: JSON.stringify({
-          username: 'loginuser',
-          email: 'login@example.com',
-          password: 'Test1234',
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const registerRequest = new NextRequest(
+        'http://localhost/api/auth/register',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            username: 'loginuser',
+            email: 'login@example.com',
+            password: 'Test1234',
+          }),
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
       await registerPOST(registerRequest);
 
       // Then try to login
@@ -115,4 +119,3 @@ describe('Authentication API', () => {
     });
   });
 });
-

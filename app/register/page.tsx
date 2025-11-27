@@ -94,7 +94,8 @@ export default function Register() {
               required
             />
             <small style={{ color: '#666', fontSize: '12px' }}>
-              Must be at least 8 characters with uppercase, lowercase, and number
+              Must be at least 8 characters with uppercase, lowercase, and
+              number
             </small>
           </div>
           {error && <div className="error">{error}</div>}
@@ -117,4 +118,3 @@ export default function Register() {
     </div>
   );
 }
-

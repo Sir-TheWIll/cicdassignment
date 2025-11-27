@@ -13,11 +13,13 @@ DATABASE_URL=postgresql://username:password@host:port/database
 **Format:** `postgresql://[user]:[password]@[host]:[port]/[database]`
 
 **Example:**
+
 ```bash
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/taskmanager
 ```
 
 **For Docker Compose:**
+
 ```bash
 DATABASE_URL=postgresql://postgres:postgres@postgres:5432/taskmanager
 ```
@@ -28,7 +30,8 @@ DATABASE_URL=postgresql://postgres:postgres@postgres:5432/taskmanager
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 ```
 
-**Important:** 
+**Important:**
+
 - Use a strong, random string in production
 - Never commit this to version control
 - Minimum 32 characters recommended
@@ -42,6 +45,7 @@ NODE_ENV=development  # or 'production' or 'test'
 ## Environment Files
 
 ### Development (.env)
+
 Create a `.env` file in the root directory:
 
 ```bash
@@ -51,6 +55,7 @@ NODE_ENV=development
 ```
 
 ### Testing (.env.test)
+
 For running tests:
 
 ```bash
@@ -60,7 +65,9 @@ NODE_ENV=test
 ```
 
 ### Production
+
 Use environment variables from your hosting platform:
+
 - Docker: Set in `docker-compose.yml` or container environment
 - Cloud platforms: Use their environment variable management
 - Never hardcode secrets
@@ -109,6 +116,7 @@ services:
 ### Issue: "DATABASE_URL environment variable is not set"
 
 **Solution:**
+
 - Check if `.env` file exists
 - Verify variable name is correct
 - Ensure `.env` is in the root directory
@@ -117,6 +125,7 @@ services:
 ### Issue: "Connection refused" or "Cannot connect to database"
 
 **Solution:**
+
 - Verify database is running
 - Check DATABASE_URL format
 - Ensure host and port are correct
@@ -125,6 +134,7 @@ services:
 ### Issue: "JWT_SECRET is not set"
 
 **Solution:**
+
 - Add JWT_SECRET to `.env` file
 - Use a strong random string
 - Restart the application
@@ -147,16 +157,18 @@ NODE_ENV=development
 You can generate a secure random string using:
 
 **Node.js:**
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 **OpenSSL:**
+
 ```bash
 openssl rand -hex 32
 ```
 
 **Online:**
+
 - Use a secure random string generator
 - Minimum 32 characters recommended
-

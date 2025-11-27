@@ -32,4 +32,3 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: ['/api/tasks/:path*', '/tasks/:path*', '/dashboard/:path*'],
 };
-

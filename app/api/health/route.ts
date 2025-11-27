@@ -7,14 +7,15 @@ export async function GET() {
       return NextResponse.json({
         status: 'healthy',
         database: 'not_configured',
-        message: 'Database not configured. UI is available but API endpoints require database.',
+        message:
+          'Database not configured. UI is available but API endpoints require database.',
         timestamp: new Date().toISOString(),
       });
     }
 
     const pool = getDbPool();
     await pool.query('SELECT 1');
-    
+
     return NextResponse.json({
       status: 'healthy',
       database: 'connected',
@@ -25,11 +26,11 @@ export async function GET() {
       {
         status: 'unhealthy',
         database: 'disconnected',
-        message: 'Database connection failed. Please check your DATABASE_URL configuration.',
+        message:
+          'Database connection failed. Please check your DATABASE_URL configuration.',
         timestamp: new Date().toISOString(),
       },
       { status: 503 }
     );
   }
 }
-

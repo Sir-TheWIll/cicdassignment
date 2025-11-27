@@ -5,17 +5,18 @@ let pool: Pool | null = null;
 export function getDbPool(): Pool {
   if (!pool) {
     const connectionString = process.env.DATABASE_URL;
-    
+
     if (!connectionString) {
       throw new Error('DATABASE_URL environment variable is not set');
     }
 
     // Determine SSL setting based on connection string and environment
     // Disable SSL for local Docker containers (postgres hostname) or development
-    const useSSL = process.env.NODE_ENV === 'production' && 
-                    !connectionString.includes('@postgres:') && 
-                    !connectionString.includes('@localhost:');
-    
+    const useSSL =
+      process.env.NODE_ENV === 'production' &&
+      !connectionString.includes('@postgres:') &&
+      !connectionString.includes('@localhost:');
+
     pool = new Pool({
       connectionString,
       ssl: useSSL ? { rejectUnauthorized: false } : false,
@@ -37,14 +38,14 @@ export function hasDatabaseConfig(): boolean {
 export async function initDatabase(): Promise<void> {
   const maxRetries = 5;
   const retryDelay = 2000; // 2 seconds
-  
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const pool = getDbPool();
-      
+
       // Test connection first
       await pool.query('SELECT 1');
-      
+
       // Create users table
       await pool.query(`
         CREATE TABLE IF NOT EXISTS users (
@@ -77,16 +78,24 @@ export async function initDatabase(): Promise<void> {
         CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
         CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
       `);
-      
+
       console.log('Database initialized successfully');
       return;
     } catch (error: any) {
       if (attempt === maxRetries) {
-        console.error('Failed to initialize database after', maxRetries, 'attempts:', error);
+        console.error(
+          'Failed to initialize database after',
+          maxRetries,
+          'attempts:',
+          error
+        );
         throw error;
       }
-      console.warn(`Database initialization attempt ${attempt} failed, retrying in ${retryDelay}ms...`, error.message);
-      await new Promise(resolve => setTimeout(resolve, retryDelay));
+      console.warn(
+        `Database initialization attempt ${attempt} failed, retrying in ${retryDelay}ms...`,
+        error.message
+      );
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
     }
   }
 }
@@ -97,4 +106,3 @@ export async function closeDatabase(): Promise<void> {
     pool = null;
   }
 }
-

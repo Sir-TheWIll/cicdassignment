@@ -94,7 +94,10 @@ export async function PATCH(
     }
 
     if (updates.length === 0) {
-      return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'No fields to update' },
+        { status: 400 }
+      );
     }
 
     updates.push(`updated_at = CURRENT_TIMESTAMP`);
@@ -128,4 +131,3 @@ export async function PATCH(
     );
   }
 }
-

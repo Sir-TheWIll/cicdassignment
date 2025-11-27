@@ -2,7 +2,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getDbPool } from './db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET =
+  process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 export interface User {
   id: number;
@@ -82,4 +83,3 @@ export async function createUser(
 
   return result.rows[0];
 }
-

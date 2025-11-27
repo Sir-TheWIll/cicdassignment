@@ -48,24 +48,28 @@ cloudops-cicd-evaluation/
 ## Application Features
 
 ### Authentication
+
 - User registration with validation
 - Secure password hashing (bcrypt)
 - JWT token-based authentication
 - HTTP-only cookies for token storage
 
 ### Task Management
+
 - Create, read, update, delete tasks
 - Task status tracking (pending, in_progress, completed)
 - Task priority levels (low, medium, high)
 - User-specific task isolation
 
 ### Security
+
 - Input validation with Zod
 - SQL injection prevention (parameterized queries)
 - Password strength requirements
 - Secure environment variable handling
 
 ### Database
+
 - PostgreSQL database
 - Automatic schema initialization
 - User and task tables
@@ -84,12 +88,14 @@ cloudops-cicd-evaluation/
 ## What Students Must Create
 
 ### Day 1: Dockerization
+
 1. **Dockerfile** - Multi-stage build for Next.js app
 2. **.dockerignore** - Already provided, but students should understand it
 3. **docker-compose.yml** - PostgreSQL + Next.js orchestration
 4. **.env** - Environment variables (local, not committed)
 
 ### Day 2: CI/CD
+
 1. **.github/workflows/ci.yml** - Build and test pipeline
 2. **.github/workflows/release.yml** - Release workflow (optional, can be combined)
 3. **Documentation** - Complete README.md
@@ -98,6 +104,7 @@ cloudops-cicd-evaluation/
 ## Assessment Goals
 
 Students will demonstrate:
+
 1. Docker containerization skills
 2. Database setup and management
 3. CI/CD pipeline implementation
@@ -108,16 +115,19 @@ Students will demonstrate:
 ## Key Files for Students
 
 ### Must Read
+
 - `ASSESSMENT.md` - Complete assessment instructions
 - `README.md` - Project overview
 - `STUDENT_CHECKLIST.md` - Progress tracking
 
 ### Reference Files
+
 - `docker-compose.example.yml` - Example docker-compose (reference only)
 - `.github/workflows/example-ci.yml` - Example CI workflow (reference only)
 - `ENV_SETUP.md` - Environment variables guide
 
 ### Must Create
+
 - `Dockerfile` - Application containerization
 - `docker-compose.yml` - Multi-container setup
 - `.github/workflows/ci.yml` - CI pipeline
@@ -174,6 +184,7 @@ Students will demonstrate:
 ## Success Criteria
 
 A successful submission includes:
+
 - ✅ Application runs in Docker
 - ✅ Database properly configured
 - ✅ All tests pass
@@ -194,4 +205,3 @@ A successful submission includes:
 ---
 
 **This assessment is designed to evaluate practical DevOps skills at a Junior DevOps Engineer level.**
-

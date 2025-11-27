@@ -1,11 +1,12 @@
 import { GET, POST } from '@/app/api/tasks/route';
-import { DELETE } from '@/app/api/tasks/[id]/route';
+import { DELETE, PATCH } from '@/app/api/tasks/[id]/route';
 import { NextRequest } from 'next/server';
 import { initDatabase, closeDatabase } from '@/lib/db';
 import { createUser, generateToken } from '@/lib/auth';
 
 // Mock environment variables
-process.env.DATABASE_URL = process.env.DATABASE_URL || 'postgresql://test:test@localhost:5432/testdb';
+process.env.DATABASE_URL =
+  process.env.DATABASE_URL || 'postgresql://test:test@localhost:5432/testdb';
 process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret-key';
 
 describe('Tasks API', () => {
@@ -15,7 +16,11 @@ describe('Tasks API', () => {
   beforeAll(async () => {
     await initDatabase();
     // Create a test user
-    const user = await createUser('taskuser', 'taskuser@example.com', 'Test1234');
+    const user = await createUser(
+      'taskuser',
+      'taskuser@example.com',
+      'Test1234'
+    );
     userId = user.id;
     authToken = generateToken(user);
   });
@@ -84,5 +89,152 @@ describe('Tasks API', () => {
       expect(response.status).toBe(400);
     });
   });
-});
 
+  describe('PATCH /api/tasks/[id]', () => {
+    let taskId: number;
+
+    beforeEach(async () => {
+      // Create a task for testing
+      const createRequest = new NextRequest('http://localhost/api/tasks', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'Task to Update',
+          description: 'Original description',
+          status: 'pending',
+          priority: 'low',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `token=${authToken}`,
+        },
+      });
+      const createResponse = await POST(createRequest);
+      const task = await createResponse.json();
+      taskId = task.id;
+    });
+
+    it('should update a task successfully', async () => {
+      const request = new NextRequest(
+        `http://localhost/api/tasks/${taskId}`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify({
+            title: 'Updated Task',
+            status: 'in_progress',
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            Cookie: `token=${authToken}`,
+          },
+        }
+      );
+
+      const response = await PATCH(request, { params: { id: String(taskId) } });
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data.title).toBe('Updated Task');
+      expect(data.status).toBe('in_progress');
+    });
+
+    it('should reject update without authentication', async () => {
+      const request = new NextRequest(
+        `http://localhost/api/tasks/${taskId}`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify({
+            title: 'Updated Task',
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const response = await PATCH(request, { params: { id: String(taskId) } });
+      expect(response.status).toBe(401);
+    });
+
+    it('should reject invalid task ID', async () => {
+      const request = new NextRequest('http://localhost/api/tasks/invalid', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: 'Updated Task',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `token=${authToken}`,
+        },
+      });
+
+      const response = await PATCH(request, { params: { id: 'invalid' } });
+      expect(response.status).toBe(400);
+    });
+  });
+
+  describe('DELETE /api/tasks/[id]', () => {
+    let taskId: number;
+
+    beforeEach(async () => {
+      // Create a task for testing
+      const createRequest = new NextRequest('http://localhost/api/tasks', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'Task to Delete',
+          description: 'This will be deleted',
+          status: 'pending',
+          priority: 'medium',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `token=${authToken}`,
+        },
+      });
+      const createResponse = await POST(createRequest);
+      const task = await createResponse.json();
+      taskId = task.id;
+    });
+
+    it('should delete a task successfully', async () => {
+      const request = new NextRequest(
+        `http://localhost/api/tasks/${taskId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Cookie: `token=${authToken}`,
+          },
+        }
+      );
+
+      const response = await DELETE(request, { params: { id: String(taskId) } });
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data.message).toBe('Task deleted successfully');
+    });
+
+    it('should reject delete without authentication', async () => {
+      const request = new NextRequest(
+        `http://localhost/api/tasks/${taskId}`,
+        {
+          method: 'DELETE',
+        }
+      );
+
+      const response = await DELETE(request, { params: { id: String(taskId) } });
+      expect(response.status).toBe(401);
+    });
+
+    it('should reject invalid task ID', async () => {
+      const request = new NextRequest('http://localhost/api/tasks/invalid', {
+        method: 'DELETE',
+        headers: {
+          Cookie: `token=${authToken}`,
+        },
+      });
+
+      const response = await DELETE(request, { params: { id: 'invalid' } });
+      expect(response.status).toBe(400);
+    });
+  });
+});
